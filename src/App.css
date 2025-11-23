@@ -1,38 +1,725 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
 .App {
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  padding: 1.5rem 0;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Sections */
+.section {
+  background: white;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+  color: #1e3c72;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+/* Selection Actions */
+.selection-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  background-color: #f0f5ff;
+  color: #1e3c72;
+  border: 1px solid #c2d6ff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #e6f0ff;
+}
+
+/* Fishermen List */
+.fishermen-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.fisherman-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.fisherman-item:last-child {
+  border-bottom: none;
+}
+
+.fisherman-item label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.fisherman-item input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.fisherman-name {
+  font-weight: 600;
+  color: #1e3c72;
+  min-width: 150px;
+}
+
+.fisherman-phone {
+  color: #666;
+  font-family: monospace;
+}
+
+/* New Table Styles */
+.fishermen-list-container {
+  overflow-x: auto;
+}
+
+.fishermen-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.fishermen-table th {
+  background: #f8f9fa;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #1e3c72;
+  border-bottom: 2px solid #e1e5e9;
+}
+
+.fishermen-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.fisherman-row:hover {
+  background-color: #f8f9fa;
+}
+
+/* Column Widths */
+.col-select {
+  width: 60px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.col-name {
+  width: 200px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.col-phone {
+  width: 150px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.col-violations {
+  width: 120px;
+}
+
+.col-activity {
+  width: 100px;
+}
+
+/* Violation Indicators */
+.violation-indicator {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.violation-indicator.red {
+  background: #ffe6e6;
+  color: #d63031;
+}
+
+.violation-indicator.orange {
+  background: #fff4e6;
+  color: #e67e22;
+}
+
+.violation-indicator.green {
+  background: #e6f7e6;
+  color: #27ae60;
+}
+
+.violation-indicator.gray {
+  background: #f8f9fa;
+  color: #666;
+}
+
+/* Mock Notice */
+.mock-notice {
+  font-size: 0.7rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* Show Activity Button */
+.show-activity-btn {
+  padding: 6px 12px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.show-activity-btn:hover {
+  background: #357abd;
+}
+
+.show-activity-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Expanded Route Section */
+.expanded-row {
+  background: #fafbfc !important;
+}
+
+.fisherman-route-section {
+  padding: 20px;
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.fisherman-route-section h3 {
+  color: #1e3c72;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.route-content {
+  min-height: 100px;
+}
+
+/* Session Selector */
+.session-selector {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #4a90e2;
+}
+
+.session-selector label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #1e3c72;
+}
+
+.session-dropdown {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.session-dropdown:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+/* Session Summary */
+.session-summary {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #4a90e2;
+}
+
+.session-summary h4 {
+  color: #1e3c72;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.summary-item {
   display: flex;
   flex-direction: column;
+  gap: 5px;
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Violation Analytics */
+.violation-analytics {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff4e6;
+  border-radius: 8px;
+  border-left: 4px solid #e67e22;
+}
+
+.violation-analytics h4 {
+  color: #e67e22;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.analytics-item {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #ffeaa7;
+}
+
+.analytics-icon {
+  font-size: 1.2rem;
+}
+
+.analytics-label {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.analytics-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e67e22;
+}
+
+/* Map Placeholder */
+.map-placeholder {
+  background: #f8f9fa;
+  padding: 40px 20px;
+  text-align: center;
+  border-radius: 8px;
+  border: 2px dashed #ddd;
+  margin: 20px 0;
+}
+
+.map-placeholder p {
+  margin: 5px 0;
+  color: #666;
+}
+
+/* Message Area */
+.selected-count {
+  background-color: #e6f0ff;
+  color: #1e3c72;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.message-textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.message-textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+.char-count {
+  text-align: right;
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Send Button */
+.send-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
   color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
 }
 
-.App-link {
-  color: #61dafb;
+.send-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.send-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Tabs Navigation */
+.tabs {
+  display: flex;
+  background: white;
+  border-bottom: 1px solid #e1e5e9;
+  padding: 0 2rem;
+}
+
+.tab-button {
+  padding: 1rem 2rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.tab-button:hover {
+  background-color: #f8f9fa;
+  color: #1e3c72;
+}
+
+.tab-button.active {
+  color: #1e3c72;
+  border-bottom-color: #1e3c72;
+  background-color: #f0f5ff;
+}
+
+/* Message History Styles */
+.message-history {
+  margin-top: 2rem;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.history-item {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #4a90e2;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.recipients {
+  background: #e6f0ff;
+  color: #1e3c72;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.message-time {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.message-content {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.message-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.message-type {
+  text-transform: capitalize;
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Sent To Section */
+.sent-to-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.sent-to-section strong {
+  color: #1e3c72;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.fishermen-recipients {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.fisherman-recipient {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #4a90e2;
+}
+
+.recipient-name {
+  font-weight: 600;
+  color: #1e3c72;
+  min-width: 120px;
+}
+
+.recipient-phone {
+  color: #666;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+/* No Data */
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .section {
+    padding: 1.5rem;
   }
+  
+  .fisherman-item label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .selection-actions {
+    flex-direction: column;
+  }
+
+  /* Responsive table styles */
+  .fishermen-table {
+    font-size: 0.9rem;
+  }
+  
+  .fishermen-table th,
+  .fishermen-table td {
+    padding: 8px 10px;
+  }
+  
+  .col-name {
+    width: 150px;
+  }
+  
+  .col-phone {
+    width: 120px;
+  }
+  
+  .col-violations {
+    width: 100px;
+  }
+  
+  .col-activity {
+    width: 80px;
+  }
+
+  /* Responsive session details */
+  .session-details {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  /* Responsive grids */
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .analytics-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+
+/*************\
+
+/* Fishing Map Styles */
+.fishing-map-container {
+  margin: 20px 0;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.map-legend {
+  background: white;
+  padding: 15px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.map-legend h4 {
+  color: #1e3c72;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.legend-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.legend-color {
+  width: 20px;
+  height: 12px;
+  display: inline-block;
+  margin-right: 8px;
+  border: 1px solid #ccc;
+}
+
+.legend-point {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  border: 2px solid white;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+
+/* Leaflet Marker Customization */
+.route-point-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-popup-content {
+  font-size: 0.9rem;
+}
+
+.leaflet-popup-content strong {
+  color: #1e3c72;
 }
