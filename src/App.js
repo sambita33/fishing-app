@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { supabase } from './supabaseClient';
 import MessageHistory from './components/MessageHistory';
-import FishingMap from './components/FishingMapfixed';
+import FishingMap from './components/FishingMap';
 import { calculateViolationTimes, calculateTotalViolations } from './utils/geofencing';
 
 function App() {
