@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import { supabase } from './supabaseClient';
 import MessageHistory from './components/MessageHistory';
-import FishingMap from './components/FishingMap';
+import FishingMap from './components/FishingMapfixed';
 import { calculateViolationTimes, calculateTotalViolations } from './utils/geofencing';
 
 function App() {
@@ -220,21 +220,34 @@ function App() {
     }
   };
 
-  // Format date for display
+  // Format date for display - NO TIMEZONE CONVERSION!
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
+    if (!dateString) return 'N/A';
+    
+    // Extract date part directly
+    const datePart = dateString.split('T')[0];
+    const [year, month, day] = datePart.split('-');
+    
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    return `${parseInt(day)} ${monthNames[parseInt(month) - 1]} ${year}`;
   };
 
-  // Format time for display
+  // Format time for display - NO TIMEZONE CONVERSION!
   const formatTime = (dateString) => {
-    return new Date(dateString).toLocaleTimeString('en-IN', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    if (!dateString) return 'N/A';
+    
+    // Direct extraction from timestamp (already in IST)
+    const timePart = dateString.split('T')[1]?.split('.')[0];
+    if (!timePart) return 'N/A';
+    
+    const [hours, minutes] = timePart.split(':');
+    const hourNum = parseInt(hours);
+    const ampm = hourNum >= 12 ? 'pm' : 'am';
+    const displayHour = hourNum % 12 || 12;
+    
+    return `${displayHour}:${minutes} ${ampm}`;
   };
 
   // Format session for dropdown display
