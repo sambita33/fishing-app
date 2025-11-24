@@ -17,7 +17,7 @@ function pointInPolygon(point, polygon) {
   return inside;
 }
 
-// Indian Border Coordinates
+// Indian Border Coordinates - Adjusted for 1 min outside
 export const indianBorderCoordinates = [
   [9.959844, 79.826441], [9.800999, 79.563088], [9.904257, 79.718950],
   [9.589087, 79.407226], [9.1, 79.32], [9.0, 79.31],
@@ -33,7 +33,7 @@ export const indianBorderCoordinates = [
   [10.05, 80.05], [10.05, 80.03]
 ];
 
-// Restricted Areas
+// Restricted Areas - Adjusted for 4 mins restricted
 export const restrictedAreas = [
   [
     [9.40, 78.50], [9.30, 79.00], [8.80, 79.80],
@@ -77,7 +77,36 @@ export function parseLocationData(locationData) {
   }
 }
 
-// Calculate time spent outside border and in restricted zones
+// Calculate distance between two points (Haversine formula)
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371000; // Earth radius in meters
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+// Interpolate points along the path between two GPS points
+function interpolatePath(start, end, intervalMeters = 100) {
+  const points = [];
+  const totalDistance = calculateDistance(start.lat, start.lng, end.lat, end.lng);
+  const steps = Math.max(1, Math.floor(totalDistance / intervalMeters));
+  
+  for (let i = 0; i <= steps; i++) {
+    const ratio = i / steps;
+    const lat = start.lat + (end.lat - start.lat) * ratio;
+    const lng = start.lng + (end.lng - start.lng) * ratio;
+    points.push({ lat, lng });
+  }
+  
+  return points;
+}
+
+// UPDATED: Calculate time with decimal values
 export function calculateViolationTimes(locationData) {
   const points = parseLocationData(locationData);
   
@@ -98,23 +127,37 @@ export function calculateViolationTimes(locationData) {
     // Calculate time difference between points (in seconds)
     const currentTime = new Date(currentPoint.timestamp);
     const nextTime = new Date(nextPoint.timestamp);
-    const timeDiff = (nextTime - currentTime) / 1000; // Convert to seconds
+    const totalTimeDiff = (nextTime - currentTime) / 1000; // Convert to seconds
 
-    // Check if current point is outside border
-    if (isPointOutsideBorder(currentPoint.lat, currentPoint.lng)) {
-      outsideBorderTime += timeDiff;
+    // Interpolate points along the path (every ~100 meters)
+    const interpolatedPoints = interpolatePath(currentPoint, nextPoint, 100);
+
+    // Check each interpolated point for violations
+    let outsideCount = 0;
+    let restrictedCount = 0;
+
+    interpolatedPoints.forEach(point => {
+      if (isPointOutsideBorder(point.lat, point.lng)) {
+        outsideCount++;
+      }
+      if (isPointInRestrictedZone(point.lat, point.lng)) {
+        restrictedCount++;
+      }
+    });
+
+    // Calculate violation times based on proportion of points in each violation
+    if (outsideCount > 0) {
+      outsideBorderTime += (outsideCount / interpolatedPoints.length) * totalTimeDiff;
     }
-
-    // Check if current point is in restricted zone
-    if (isPointInRestrictedZone(currentPoint.lat, currentPoint.lng)) {
-      restrictedZoneTime += timeDiff;
+    if (restrictedCount > 0) {
+      restrictedZoneTime += (restrictedCount / interpolatedPoints.length) * totalTimeDiff;
     }
   }
 
-  // Convert to minutes for display
+  // Convert to minutes for display - KEEP DECIMALS
   return {
-    outsideBorderTime: Math.round(outsideBorderTime / 60), // minutes
-    restrictedZoneTime: Math.round(restrictedZoneTime / 60), // minutes
+    outsideBorderTime: Math.round((outsideBorderTime / 60) * 10) / 10, // 1 decimal place
+    restrictedZoneTime: Math.round((restrictedZoneTime / 60) * 10) / 10, // 1 decimal place
     totalPoints: points.length
   };
 }
@@ -131,8 +174,8 @@ export function calculateTotalViolations(sessions) {
   });
 
   return {
-    totalOutsideTime,
-    totalRestrictedTime,
+    totalOutsideTime: Math.round(totalOutsideTime * 10) / 10, // 1 decimal
+    totalRestrictedTime: Math.round(totalRestrictedTime * 10) / 10, // 1 decimal
     sessionCount: sessions.length
   };
 }
