@@ -18,32 +18,39 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Add this function to convert UTC to IST
-const formatTimeToIST = (utcDateString) => {
-  if (!utcDateString) return 'N/A';
+// DEBUG FUNCTION
+const getTime = (timestamp) => {
+  if (!timestamp) return 'N/A';
   
-  const date = new Date(utcDateString);
+  console.log('PROCESSING TIMESTAMP:', timestamp);
   
-  // Convert to IST (UTC+5:30)
-  const istDate = new Date(date.getTime() + (5 * 60 + 30) * 60 * 1000);
+  // Direct string extraction
+  const timePart = timestamp.split('T')[1]?.split('.')[0];
+  if (!timePart) return 'N/A';
   
-  return istDate.toLocaleString('en-IN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
-  });
+  const [hours, minutes] = timePart.split(':');
+  const hourNum = parseInt(hours);
+  const ampm = hourNum >= 12 ? 'pm' : 'am';
+  const displayHour = hourNum % 12 || 12;
+  
+  const result = `${displayHour}:${minutes} ${ampm}`;
+  console.log('CONVERTED TO:', result);
+  
+  return result;
 };
 
 const FishingMap = ({ sessionData, fishermanName, violationTimes }) => {
   const routePoints = parseLocationData(sessionData?.location_data);
   
-  // Calculate map center - use first point or default to India center
+  // DEBUG: Log everything
+  console.log('=== FISHING MAP RENDER ===');
+  console.log('All route points:', routePoints);
+  console.log('First point timestamp:', routePoints[0]?.timestamp);
+  console.log('First point converted time:', getTime(routePoints[0]?.timestamp));
+
   const mapCenter = routePoints.length > 0 
     ? [routePoints[0].lat, routePoints[0].lng]
-    : [20.5937, 78.9629]; // Default India center
+    : [20.5937, 78.9629];
 
   return (
     <div className="fishing-map-container">
@@ -153,7 +160,7 @@ const FishingMap = ({ sessionData, fishermanName, violationTimes }) => {
                   <br />
                   Lng: {point.lng.toFixed(6)}
                   <br />
-                  Recorded: {formatTimeToIST(point.timestamp)}
+                  Recorded: {getTime(point.timestamp)}
                   <br />
                   Status: <span style={{ 
                     color: isRestricted ? '#d63031' : isOutside ? '#e67e22' : '#4caf50', 
@@ -174,7 +181,7 @@ const FishingMap = ({ sessionData, fishermanName, violationTimes }) => {
               <Popup>
                 <strong>Start Location</strong>
                 <br />
-                First GPS Recorded: {formatTimeToIST(routePoints[0].timestamp)}
+                First GPS Recorded: {getTime(routePoints[0].timestamp)}
                 <br />
                 Coordinates: {routePoints[0].lat.toFixed(6)}, {routePoints[0].lng.toFixed(6)}
               </Popup>
@@ -185,7 +192,7 @@ const FishingMap = ({ sessionData, fishermanName, violationTimes }) => {
                 <Popup>
                   <strong>End Location</strong>
                   <br />
-                  Last GPS Recorded: {formatTimeToIST(routePoints[routePoints.length - 1].timestamp)}
+                  Last GPS Recorded: {getTime(routePoints[routePoints.length - 1].timestamp)}
                   <br />
                   Coordinates: {routePoints[routePoints.length - 1].lat.toFixed(6)}, {routePoints[routePoints.length - 1].lng.toFixed(6)}
                 </Popup>
